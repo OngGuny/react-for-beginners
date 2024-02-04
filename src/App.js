@@ -1,39 +1,40 @@
 import { useEffect, useState }  from "react";
 
-function App() {
-// how to prevent rerender when state change? useStatu is impossible to do that. Because useState rerender( = run every codes in component.js) component when state change. So What?
-// -> i want render component only once.
-  const [counter,setCounter] = useState(0);
-  const [keyword, setKeyword] = useState('');
+function Hello() {
+  // useEffect( () => {
+// console.log('When showing, Im logged.');
+// Important useEffect 안에서 함수를 반환하는게, clean up. 컴포넌트가 언마운트 될 때, 실행하도록 하는 함수.
+// return () => console.log('Clean up! when un showing.');
+  // }, [])
+  // return <h1>Hellooo</h1>
+//  이건 아래의 모양과 같은로직이다. 
 
-  const onChange = (event) =>
-    setKeyword(event.target.value);
-    console.log('redner once when rerender.');
- useEffect(() => {
-    console.log('redner once when counter changed.');
-  },[counter]);
-  useEffect( () => {
-    console.log('redner once, cause empty array = no dependancy... read docs..., watch nothing');
-  },[]);
-  useEffect(()=>{
-    if(keyword !== "" && keyword.length > 5){
-      console.log('log when keyword change'+ keyword);
+function byFunction() {
+  console.log('bye');
+}
 
-    }
-  },[keyword])
-  const onClick = () => setCounter((prev) => prev +1);
+const hiFunction = () => {
+  console.log('Hi~');
+  return byFunction;
+}
 
-  console.log('onRerender , i\'m in component' );
+useEffect(hiFunction,[]);
+return <h1>Hellooo</h1> 
+//근데 클린업 펑션은 잘 사용하지 않는다...
+//특정한 케이스에만 사용........ 
+//그리고 보통은 useEffect 안에다가 코드작성한다.
+ //함수따로 안만들고
+}
+
+
+function App  () {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing((prev)=>!prev);
+
   return (
 <div>
-  <input
-  value={keyword}
-  onChange={onChange}
-  type="text"
-  placeholder="Search here.."
-  />
-  <h1>{counter}</h1>
-  <button onClick={onClick}>Click Me</button>
+  {showing ? <Hello/> : null}
+  <button onClick={onClick}>{showing ? 'Hide' : 'Show'}</button>
 </div>
   );
 }
